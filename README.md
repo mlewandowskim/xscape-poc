@@ -9,3 +9,7 @@
 npm i
 npm run dev
 ```
+
+https://xscape-poc.vercel.app/
+
+all assets ai generated lol

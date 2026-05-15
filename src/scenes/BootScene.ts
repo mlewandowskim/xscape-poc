@@ -7,7 +7,7 @@ export class BootScene extends Phaser.Scene {
 
   preload(): void {
     this.load.image('room', 'assets/room.png');
-    this.load.video('intro', 'assets/intro.mp4', true);
+    this.load.video('intro', 'assets/intro.mp4', false);
   }
 
   create(): void {

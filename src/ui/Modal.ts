@@ -36,7 +36,16 @@ export class Modal extends Phaser.GameObjects.Container {
     const overlay = scene.add
       .rectangle(cx, cy, GAME_WIDTH, GAME_HEIGHT, OVERLAY_COLOR, OVERLAY_ALPHA)
       .setInteractive();
-    overlay.on('pointerup', () => this.close());
+    let overlayArmed = false;
+    overlay.on('pointerdown', () => {
+      overlayArmed = true;
+    });
+    overlay.on('pointerup', () => {
+      if (overlayArmed) {
+        overlayArmed = false;
+        this.close();
+      }
+    });
 
     const shadow = scene.add
       .rectangle(cx + 6, cy + 8, w, h, 0x000000, 0.45);
@@ -82,11 +91,22 @@ export class Modal extends Phaser.GameObjects.Container {
       .setOrigin(0.5, 0)
       .setInteractive({ useHandCursor: true });
 
+    let closeArmed = false;
     closeBtn.on('pointerover', () => closeBtn.setColor(INK_COLOR));
-    closeBtn.on('pointerout', () => closeBtn.setColor(INK_MUTED));
+    closeBtn.on('pointerout', () => {
+      closeBtn.setColor(INK_MUTED);
+      closeArmed = false;
+    });
+    closeBtn.on('pointerdown', (_p: Phaser.Input.Pointer, _lx: number, _ly: number, ev: Phaser.Types.Input.EventData) => {
+      ev.stopPropagation();
+      closeArmed = true;
+    });
     closeBtn.on('pointerup', (_p: Phaser.Input.Pointer, _lx: number, _ly: number, ev: Phaser.Types.Input.EventData) => {
       ev.stopPropagation();
-      this.close();
+      if (closeArmed) {
+        closeArmed = false;
+        this.close();
+      }
     });
 
     this.add([overlay, shadow, card, title, rule, body, closeBtn]);

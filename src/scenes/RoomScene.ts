@@ -4,6 +4,7 @@ import { ROOM_ITEMS, RoomItem } from '../data/roomItems';
 import { InteractionMarker } from '../objects/InteractionMarker';
 import { CustomCursor } from '../objects/CustomCursor';
 import { Modal } from '../ui/Modal';
+import { LockerModal } from '../ui/LockerModal';
 
 const READY_BORDER_THICKNESS = 8;
 const READY_BORDER_TARGET_ALPHA = 0.4;
@@ -72,14 +73,24 @@ export class RoomScene extends Phaser.Scene {
     this.modalOpen = true;
     this.marker.hide();
     this.input.setDefaultCursor('default');
-    new Modal(this, {
-      title: item.label,
-      body: item.description,
-      onClose: () => {
-        this.modalOpen = false;
-        this.input.setDefaultCursor('none');
-      },
-    });
+
+    const onClose = () => {
+      this.modalOpen = false;
+      this.input.setDefaultCursor('none');
+    };
+
+    if (item.id === 'lock') {
+      new LockerModal(this, {
+        onWin: () => this.scene.start('WinScene'),
+        onClose,
+      });
+    } else {
+      new Modal(this, {
+        title: item.label,
+        body: item.description,
+        onClose,
+      });
+    }
   }
 
   private findItemNear(x: number, y: number): RoomItem | null {
